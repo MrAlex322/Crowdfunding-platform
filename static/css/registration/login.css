@@ -1,0 +1,62 @@
+
+    /* Стиль для модального окна */
+.modal {
+    display: none; /* Скрываем модальное окно по умолчанию */
+    position: fixed; /* Относительно экрана */
+    z-index: 1; /* Помещаем его поверх других элементов */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Добавляем скроллбар при необходимости */
+    background-color: rgba(0,0,0,0.4); /* Черный цвет с полупрозрачностью */
+ }
+
+    /* Стиль для контейнера модального окна */
+.modal-content {
+    background-color: #fefefe; /* Белый цвет фона */
+    margin: 15% auto; /* 15% сверху и по центру экрана */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ширина окна */
+}
+
+    /* Стиль для кнопки открытия модального окна */
+.open-modal {
+    background-color: #4CAF50; /* Зеленый цвет кнопки */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+ }
+
+    /* Стиль для кнопки закрытия модального окна */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+ }
+
+    /* Стиль для заголовка модального окна */
+ .modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+ }
+
+    /* Стиль для текста модального окна */
+ .modal-text {
+    padding: 2px 16px;
+ }
+
+    /* Стиль для формы модального окна */
+.modal-form {
+     padding: 2px 16px;
+}
+

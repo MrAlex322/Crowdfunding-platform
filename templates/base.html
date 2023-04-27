@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <title>User authenticate</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block css_additional %} {% endblock %}
+</head>
+<body class="container">
+  <ul class="list-group">
+    <li class="list-group-item">
+      User: {{ user }}
+    </li>
+    <li class="list-group-item">
+      <a href="{% url 'home' %}"> Home</a>
+    </li>
+  </ul>
+  {% block content %}
+  {% endblock %}
+
+  {% block javascript_additional %}
+  {% endblock %}
+</body>
+</html>

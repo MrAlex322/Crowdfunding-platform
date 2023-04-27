@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'news/news_list.css' %}">
+
+{% block content %}
+    <h1>News</h1>
+    {% for post in posts %}
+        <div class="post">
+            <a href="{% url 'news_list' %}">{{ post.title }}</a>
+            {{ post.header }}
+            {{ body }}
+            {{ post.author }}
+        </div>
+    <form action="{% url 'create_news_post' %}" method="post">
+    {% endfor %}
+        <a href="{% url 'create_news_post' %}">Create</a>
+{% endblock %}
+

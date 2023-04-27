@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css_additional %}
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'login.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Login</h1>
+  <hr>
+
+  {% if form.errors %}
+    <p> {{ form.error.error }}</p>
+  {% endif %}
+
+  <form action="{% url 'login' %}" method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+  <button type="submit" class="btn btn-success">submit</button>
+  </form>
+
+  <a href="{% url 'password_reset' %}">Forgot password?</a>
+
+
+
+{% endblock %}
