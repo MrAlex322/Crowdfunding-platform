@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            {% for post in posts %}
+             <div class="card-body">
+                 <a href="{{ post.get_url }}">
+                     <h5 class="card-title">{{ post.title }}</h5>
+                 </a>
+                 <p class="card-text">{{ post.content }}</p>
+                 {% if post.photo %}
+                    <img src="{{ post.photo.url }}" class="card-img-top">
+                 {% endif %}
+                 <p class="card-text"><small class="text-muted">Published at: {{ post.created_at }}</small></p>
+                 <hr>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Categories</h5>
+            <ul class="list-group">
+              <li class="list-group-item">News Title</li>
+                {% for post in posts %}
+                  <li class="list-group-item">{{ post.title }}</li>
+                {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Popular News</h5>
+            <ul class="list-group">
+              <li class="list-group-item">News Title</li>
+            </ul>
+            <ul class="list-group">
+                <h3>
+                  <a href="{% url 'create_news_post' %}">+ New Post</a>
+                </h3>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

@@ -1,26 +1,65 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'login.css' %}">
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <title>User authenticate</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% block css_additional %} {% endblock %}
+  <meta charset="UTF-8">
+  <title>News Page</title>
+    {% block title %}{% endblock %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
-<body class="container">
-  <ul class="list-group">
-    <li class="list-group-item">
-      User: {{ user }}
-    </li>
-    <li class="list-group-item">
-      <a href="{% url 'home' %}"> Home</a>
-    </li>
-  </ul>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">News Page</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}"> Home</a>
+          </li>
+          <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+            <li class="nav-item">
+              <span class="badge badge-pill badge-light py-2 px-3">
+                User: {{ user }}
+              </span>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            {% endif %}
+           </ul>
+        </ul>
+      </div>
+    </div>
+  </nav>
   {% block content %}
   {% endblock %}
-
-  {% block javascript_additional %}
-  {% endblock %}
 </body>
+  <footer class="bg-dark text-light py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <p class="mb-0">&copy; 2023 News Page</p>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-inline mb-0 float-md-right">
+            <li class="list-inline-item"><a href="#">Terms of Use</a></li>
+            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </html>

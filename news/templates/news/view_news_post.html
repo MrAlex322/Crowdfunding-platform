@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'news/static/news/view_news_post.css' %}">
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.content }}</p>
+  <div class="post-image">
+    <img src="{{ post.photo.url }}" class="card-img-top">
+  </div>
+  {{ post.created_at }}
+
+  <a href="{% url 'edit_news_post' slug=post.slug %}">Редактировать</a>
+{% endblock %}

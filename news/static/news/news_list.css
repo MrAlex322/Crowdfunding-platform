@@ -1,0 +1,27 @@
+.card {
+  border: none;
+}
+
+.card-img-top {
+  border-radius: 0;
+}
+
+.list-group-item {
+  border: auto;
+  padding: .75rem 1.25rem;
+}
+
+.navbar-nav {
+  margin-left: auto;
+}
+
+.nav-item .badge {
+  background-color: #ffffff;
+  color: #212529;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
