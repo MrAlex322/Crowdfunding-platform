@@ -11,5 +11,8 @@
   </div>
   {{ post.created_at }}
 
-  <a href="{% url 'edit_news_post' slug=post.slug %}">Редактировать</a>
+{% if post.user == request.user %}
+    <a href="{% url 'edit_news_post' slug=post.slug %}">Редактировать</a>
+{% endif %}
+
 {% endblock %}

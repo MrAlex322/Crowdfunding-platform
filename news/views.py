@@ -1,9 +1,12 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect
+
+from users.models import CustomUser
 from .models import NewsPost
 from .forms import NewsPostForm
 from django.utils.text import slugify
-
 
 def news_list(request):
     posts = NewsPost.objects.all()
@@ -16,18 +19,21 @@ def news_list(request):
         "posts": posts,
     })
 
-
+@login_required
 def create_news_post(request):
     if request.method == 'POST':
         form = NewsPostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            newspost = form.save(commit=False)
+            newspost.user = request.user  # Используйте текущего аутентифицированного пользователя
+            newspost.save()
             return redirect('news_list')
     else:
         form = NewsPostForm()
         news_form = {
             'form': form,
         }
+
     return render(request, 'news/create_news_post.html', news_form)
 
 
@@ -38,7 +44,7 @@ def view_news_post(request, slug):
 
 
 def edit_news_post(request, slug):
-    # Получаем новостной пост по заголовку
+
     post = get_object_or_404(NewsPost, slug=slug)
 
     if request.method == 'POST':

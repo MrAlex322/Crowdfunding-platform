@@ -17,6 +17,7 @@
                     <img src="{{ post.photo.url }}" class="card-img-top">
                  {% endif %}
                  <p class="card-text"><small class="text-muted">Published at: {{ post.created_at }}</small></p>
+                 <p class="card-text">{{ post.user }}</p>
                  <hr>
               </div>
             {% endfor %}
