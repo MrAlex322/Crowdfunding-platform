@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect
 
 from users.models import CustomUser
-from .models import NewsPost
-from .forms import NewsPostForm
+from .models import NewsPost, Comments
+from .forms import NewsPostForm, CommentForm
 from django.utils.text import slugify
 
 def news_list(request):
@@ -38,9 +38,24 @@ def create_news_post(request):
 
 
 def view_news_post(request, slug):
-    post = get_object_or_404(NewsPost, slug=slug)
-
-    return render(request, 'news/view_news_post.html', {'post': post})
+    new = get_object_or_404(NewsPost, slug=slug)
+    comments = Comments.objects.filter(new=new)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.user = request.user
+            form.new = new
+            form.save()
+            return redirect('view_news_post', slug)
+    else:
+        form = CommentForm()
+    context = {
+        "new": new,
+        "comments": comments,
+        "form": form,
+    }
+    return render(request, 'news/view_news_post.html', context)
 
 
 def edit_news_post(request, slug):
