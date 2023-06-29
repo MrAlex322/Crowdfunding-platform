@@ -3,40 +3,127 @@
 {% block content %}
   {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'news/view_news_post.css' %}">
-  <h2>{{ new.title }}</h2>
-  <p>{{ new.content }}</p>
-  <div class="post-image">
-    <img src="{{ new.photo.url }}" class="card-img-top">
-  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h2>{{ new.title }}</h2>
+        <p>{{ new.content }}</p>
+        <div class="image-likes-section">
+          <img src="{{ new.photo.url }}" class="card-img-top">
+          <div class="likes-container d-flex justify-content-between">
+            <form id="like-form" method="POST" class="like-form" data-pk="{{ new.pk }}">
+              {% csrf_token %}
+              <button type="button" class="like-button {% if has_liked %}active{% endif %}">
+                <span class="like-icon">&#x1F44D;</span> Лайк <span class="likes-count">{{ new.likes_count }}</span>
+              </button>
+            </form>
+            <form id="dislike-form" method="POST" class="dislike-form" data-pk="{{ new.pk }}">
+              {% csrf_token %}
+              <button type="button" class="dislike-button {% if has_disliked %}active{% endif %}">
+                <span class="dislike-icon">&#x1F44E;</span> Дизлайк <span class="dislikes-count">{{ new.dislikes_count }}</span>
+              </button>
+            </form>
+          </div>
+          <p>{{ new.created_at }}</p>
+        </div>
 
-
-  {{ new.created_at }}
-
-  {% if new.user == request.user %}
-    <a href="{% url 'edit_news_post' slug=new.slug %}">Редактировать</a>
-  {% endif %}
-
-  <h4>Комментарии</h4>
-  <div class="comments-section">
-    {% for comment in comments %}
-      <div class="comment">
-        <p class="comment-user">Пользователь - {{ comment.user }}</p>
-        <p class="comment-text">{{ comment.text }}</p>
-        <p class="comment-created">Добавлен - {{ comment.created_at }}</p>
+        {% if new.user == request.user %}
+          <a href="{% url 'edit_news_post' slug=new.slug %}">Редактировать</a>
+        {% endif %}
       </div>
-    {% endfor %}
+    </div>
+    <div class="comments-section">
+      <h4>Комментарии</h4>
+      {% for comment in comments %}
+        <div class="comment">
+          <p class="comment-user">Пользователь - {{ comment.user }}</p>
+          <p class="comment-text">{{ comment.text }}</p>
+          <p class="comment-created">Добавлен - {{ comment.created_at }}</p>
+        </div>
+      {% endfor %}
+    </div>
   </div>
 
+  <script>
+    // Функция для отправки лайка
+    function sendLike(pk) {
+      const url = "{% url 'add_like' pk=0 %}".replace("0", pk);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const likeButton = document.querySelector(`.like-form[data-pk="${pk}"] .like-button`);
+          likeButton.classList.toggle('active');
+          const likesCount = document.querySelector(`.like-form[data-pk="${pk}"] .likes-count`);
+          const dislikesCount = document.querySelector(`.dislike-form[data-pk="${pk}"] .dislikes-count`);
+          if (likeButton.classList.contains('active')) {
+            likesCount.textContent = parseInt(likesCount.textContent) + 1;
+            if (dislikeButton.classList.contains('active')) {
+              dislikesCount.textContent = parseInt(dislikesCount.textContent) - 1;
+              dislikeButton.classList.remove('active');
+            }
+          } else {
+            likesCount.textContent = parseInt(likesCount.textContent) - 1;
+          }
+        }
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+    }
 
-  {% if user.is_authenticated %}
-    <form action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Отправить</button>
-    </form>
-  {% else %}
-    <h4>Чтобы оставить комментарий, авторизуйтесь</h4>
-  {% endif %}
+    // Функция для отправки дизлайка
+    function sendDislike(pk) {
+      const url = "{% url 'add_dislike' pk=0 %}".replace("0", pk);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const dislikeButton = document.querySelector(`.dislike-form[data-pk="${pk}"] .dislike-button`);
+          dislikeButton.classList.toggle('active');
+          const likesCount = document.querySelector(`.like-form[data-pk="${pk}"] .likes-count`);
+          const dislikesCount = document.querySelector(`.dislike-form[data-pk="${pk}"] .dislikes-count`);
+          if (dislikeButton.classList.contains('active')) {
+            dislikesCount.textContent = parseInt(dislikesCount.textContent) + 1;
+            if (likeButton.classList.contains('active')) {
+              likesCount.textContent = parseInt(likesCount.textContent) - 1;
+              likeButton.classList.remove('active');
+            }
+          } else {
+            dislikesCount.textContent = parseInt(dislikesCount.textContent) - 1;
+          }
+        }
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+    }
 
+    // Обработчики событий для кнопок лайка и дизлайка
+    const likeForms = document.querySelectorAll('.like-form');
+    likeForms.forEach(likeForm => {
+      const pk = likeForm.dataset.pk;
+      likeForm.addEventListener('click', () => {
+        sendLike(pk);
+      });
+    });
+
+    const dislikeForms = document.querySelectorAll('.dislike-form');
+    dislikeForms.forEach(dislikeForm => {
+      const pk = dislikeForm.dataset.pk;
+      dislikeForm.addEventListener('click', () => {
+        sendDislike(pk);
+      });
+    });
+  </script>
 {% endblock %}
-
