@@ -8,17 +8,34 @@
         <div class="card mb-3">
           <div class="card-body">
             {% for post in posts %}
-             <div class="card-body">
-                 <a href="{{ post.get_url }}">
-                     <h5 class="card-title">{{ post.title }}</h5>
-                 </a>
-                 <p class="card-text">{{ post.content }}</p>
-                 {% if post.photo %}
+              <div class="card-body">
+                <a href="{{ post.get_url }}">
+                  <h5 class="card-title">{{ post.title }}</h5>
+                </a>
+                <p class="card-text">{{ post.content }}</p>
+                <div class="image-likes-section">
+                  {% if post.photo %}
                     <img src="{{ post.photo.url }}" class="card-img-top">
-                 {% endif %}
-                 <p class="card-text"><small class="text-muted">Published at: {{ post.created_at }}</small></p>
-                 <p class="card-text">{{ post.user }}</p>
-                 <hr>
+                  {% endif %}
+                  <div class="likes-container d-flex justify-content-between">
+                    <form id="like-form-{{ post.pk }}" method="POST" data-pk="{{ post.pk }}">
+                      {% csrf_token %}
+                      <button type="button" class="like-button{% if post.has_liked %} active{% endif %}" onclick="submitLikeForm({{ post.pk }})">
+                        <span class="like-icon">&#x1F44D;</span> Лайк ({{ post.likes_count }})
+                      </button>
+                    </form>
+
+                    <form id="dislike-form-{{ post.pk }}" method="POST" data-pk="{{ post.pk }}">
+                      {% csrf_token %}
+                      <button type="button" class="dislike-button{% if post.has_disliked %} active{% endif %}" onclick="submitDislikeForm({{ post.pk }})">
+                        <span class="dislike-icon">&#x1F44E;</span> Дизлайк ({{ post.dislikes_count }})
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <p class="card-text"><small class="text-muted">Опубликовано: {{ post.created_at }}</small></p>
+                <p class="card-text">{{ post.user }}</p>
+                <hr>
               </div>
             {% endfor %}
           </div>
@@ -28,32 +45,86 @@
       <div class="col-lg-4">
         <div class="card mb-3">
           <div class="card-body">
-            <h5 class="card-title">Categories</h5>
+            <h5 class="card-title">Категории</h5>
             <ul class="list-group">
-              <li class="list-group-item">News Title</li>
-                {% for post in posts %}
-                  <li class="list-group-item">{{ post.title }}</li>
-                {% endfor %}
+              <li class="list-group-item">Заголовок новости</li>
+              {% for post in posts %}
+                <li class="list-group-item">{{ post.title }}</li>
+              {% endfor %}
             </ul>
           </div>
         </div>
 
         <div class="card mb-3">
           <div class="card-body">
-            <h5 class="card-title">Popular News</h5>
+            <h5 class="card-title">Популярные новости</h5>
             <ul class="list-group">
-              <li class="list-group-item">News Title</li>
+              <li class="list-group-item">Заголовок новости</li>
             </ul>
             <ul class="list-group">
-                <h3>
-                  <a href="{% url 'create_news_post' %}">+ New Post</a>
-                </h3>
+              <h3>
+                <a href="{% url 'create_news_post' %}">+ Создать новость</a>
+              </h3>
             </ul>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    function submitLikeForm(pk) {
+      const form = document.getElementById(`like-form-${pk}`);
+      const url = form.getAttribute('action');
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const formData = new FormData();
+      formData.append('csrfmiddlewaretoken', csrftoken);
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken,
+        },
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const likeButton = document.querySelector(`#like-form-${pk} .like-button`);
+            likeButton.classList.toggle('active');
+            likeButton.innerHTML = `<span class="like-icon">&#x1F44D;</span> Лайк (${data.likes_count})`;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    function submitDislikeForm(pk) {
+      const form = document.getElementById(`dislike-form-${pk}`);
+      const url = form.getAttribute('action');
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const formData = new FormData();
+      formData.append('csrfmiddlewaretoken', csrftoken);
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken,
+        },
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const dislikeButton = document.querySelector(`#dislike-form-${pk} .dislike-button`);
+            dislikeButton.classList.toggle('active');
+            dislikeButton.innerHTML = `<span class="dislike-icon">&#x1F44E;</span> Дизлайк (${data.dislikes_count})`;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  </script>
 {% endblock %}
-
-

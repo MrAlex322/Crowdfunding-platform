@@ -12,8 +12,30 @@ class NewsPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     photo = models.ImageField(upload_to='my_model_photos/', blank=True, null=True)
-    slug = AutoSlugField(default='', unique=False, populate_from='title') # проверить если тайтл = цифры
+    slug = AutoSlugField(default='', unique=False, populate_from='title')
     user = models.ForeignKey(CustomUser, to_field='username', verbose_name='Пользователь', on_delete=models.CASCADE)
+    likes = models.ManyToManyField(CustomUser, related_name='liked_posts', blank=True)
+    dislikes = models.ManyToManyField(CustomUser, related_name='disliked_posts', blank=True)
+    likes_count = models.IntegerField(default=0)
+    dislikes_count = models.IntegerField(default=0)
+
+    def increase_likes(self):
+        self.likes_count += 1
+        self.save()
+
+    def decrease_likes(self):
+        if self.likes_count > 0:
+            self.likes_count -= 1
+            self.save()
+
+    def increase_dislikes(self):
+        self.dislikes_count += 1
+        self.save()
+
+    def decrease_dislikes(self):
+        if self.dislikes_count > 0:
+            self.dislikes_count -= 1
+            self.save()
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -38,3 +60,5 @@ class Comments(models.Model):
 
     def __str__(self):
         return "{}".format(self.user)
+
+
