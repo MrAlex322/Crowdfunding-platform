@@ -8,7 +8,14 @@
   <div class="post-image">
     <img src="{{ new.photo.url }}" class="card-img-top">
   </div>
-
+  <div>
+   <p class="card-text"><small class="text-muted">Published at: {{ new.created_at }}</small></p>
+   <p>Likes: <span id="likes-count-{{ new.id }}">{{ new.likes.count }}</span></p>
+   <p>Dislikes: <span id="dislikes-count-{{ new.id }}">{{ new.dislikes.count }}</span></p>
+   <a href="{% url 'like_post' post_id=new.id %}" class="like-btn">Лайк</a>
+   <a href="{% url 'dislike_post' post_id=new.id %}" class="dislike-btn">Дизлайк</a>
+   <p class="card-text">{{ new.user }}</p>
+  </div>
 
   {{ new.created_at }}
 
@@ -27,7 +34,6 @@
     {% endfor %}
   </div>
 
-
   {% if user.is_authenticated %}
     <form action="" method="post">
       {% csrf_token %}
@@ -38,5 +44,52 @@
     <h4>Чтобы оставить комментарий, авторизуйтесь</h4>
   {% endif %}
 
-{% endblock %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).on("click", ".like-btn", function() {
+      var postId = $(this).attr("href").split("/").slice(-2, -1)[0];
+      $.ajax({
+        type: "POST",
+        url: "{% url 'like_post' post_id=0 %}".replace("0", postId),
+        data: {
+          csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function(response) {
+          if (response.status === "success") {
+            var likesCount = parseInt($("#likes-count-" + postId).text()) + 1;
+            $("#likes-count-" + postId).text(likesCount);
+          } else {
+            alert(response.message);
+          }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          alert("Error: " + xhr.status + " " + thrownError);
+        }
+      });
+      return false;
+    });
 
+    $(document).on("click", ".dislike-btn", function() {
+      var postId = $(this).attr("href").split("/").slice(-2, -1)[0];
+      $.ajax({
+        type: "POST",
+        url: "{% url 'dislike_post' post_id=0 %}".replace("0", postId),
+        data: {
+          csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function(response) {
+          if (response.status === "success") {
+            var dislikesCount = parseInt($("#dislikes-count-" + postId).text()) + 1;
+            $("#dislikes-count-" + postId).text(dislikesCount);
+          } else {
+            alert(response.message);
+          }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          alert("Error: " + xhr.status + " " + thrownError);
+        }
+      });
+      return false;
+    });
+  </script>
+{% endblock %}

@@ -4,26 +4,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>News Page</title>
+  <title>Лента новостей</title>
     {% block title %}{% endblock %}
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="nav-link" href="{% url 'news_list' %}">News Page</a>
+      <a class="nav-link" href="{% url 'news_list' %}">Лента</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'news_list' %}"> Home</a>
+            <a class="nav-link" href="{% url 'profile' %}"> Профиль</a>
           </li>
           <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
             </li>
             <li class="nav-item">
               <span class="badge badge-pill badge-light py-2 px-3">
@@ -32,7 +32,7 @@
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-link" href="{% url 'login' %}">Войти</a>
             </li>
             {% endif %}
            </ul>
@@ -42,7 +42,8 @@
   </nav>
   {% block content %}
   {% endblock %}
-</body>
+
+
   <footer class="bg-dark text-light py-3">
     <div class="container">
       <div class="row">
@@ -51,9 +52,8 @@
         </div>
         <div class="col-md-6">
           <ul class="list-inline mb-0 float-md-right">
-            <li class="list-inline-item"><a href="#">Terms of Use</a></li>
-            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-            <li class="list-inline-item"><a href="#">Contact Us</a></li>
+            <li class="list-inline-item"><a href="#">Политика(нет)</a></li>
+            <li class="list-inline-item"><a href="#">Контакты</a></li>
           </ul>
         </div>
       </div>
@@ -62,4 +62,7 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
 </html>
+
