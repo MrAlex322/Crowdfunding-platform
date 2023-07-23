@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  <title>Profile Page</title>
+{% endblock %}
+
+{% block content %}
+  <div class="container my-5">
+    <h2>Welcome, {{ user.username }}!</h2>
+    <p>Email: {{ user.email }}</p>
+
+    <h3>Personal Information:</h3>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Save</button>
+    </form>
+
+    <h3>Посты:</h3>
+    <div class="card mb-3">
+      <h2>
+        <a href="{% url 'create_news_post' %}">Добавить пост</a>
+      </h2>
+    </div>
+    <ul>
+      {% for post in posts %}
+        <div class="card-body">
+          <a href="{{ post.get_url }}">
+          <h5 class="card-title">{{ post.title }}</h5>
+          </a>
+          <p class="card-text">{{ post.content }}</p>
+            {% if post.photo %}
+              <img src="{{ post.photo.url }}" class="card-img-top">
+            {% endif %}
+          <p class="card-text"><small class="text-muted">Published at: {{ post.created_at }}</small></p>
+          <p>Likes: <span id="likes-count-{{ post.id }}">{{ post.likes.count }}</span></p>
+          <p>Dislikes: <span id="dislikes-count-{{ post.id }}">{{ post.dislikes.count }}</span></p>
+          <a href="{% url 'like_post' post.id %}" class="like-btn">Like</a>
+          <a href="{% url 'dislike_post' post.id %}" class="dislike-btn">Dislike</a>
+          <hr>
+        </div>
+      {% empty %}
+        <li>No posts found.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
