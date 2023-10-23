@@ -8,17 +8,21 @@
         <div class="card mb-3">
           <div class="card-body">
             {% for post in posts %}
-             <div class="card-body">
-                 <a href="{{ post.get_url }}">
-                     <h5 class="card-title">{{ post.title }}</h5>
-                 </a>
-                 <p class="card-text">{{ post.content }}</p>
-                 {% if post.photo %}
-                    <img src="{{ post.photo.url }}" class="card-img-top">
-                 {% endif %}
-                 <p class="card-text"><small class="text-muted">Published at: {{ post.created_at }}</small></p>
-                 <p class="card-text">{{ post.user }}</p>
-                 <hr>
+              <div class="card-body">
+                <a href="{{ post.get_url }}">
+                  <h5 class="card-title">{{ post.title }}</h5>
+                </a>
+                <p class="card-text">{{ post.content }}</p>
+                {% if post.photo %}
+                  <img src="{{ post.photo.url }}" class="card-img-top">
+                {% endif %}
+                <p class="card-text"><small class="text-muted">Published at: {{ post.created_at }}</small></p>
+                <p>Лайк: <span id="likes-count-{{ post.id }}">{{ post.likes.count }}</span></p>
+                <p>Дизлайк: <span id="dislikes-count-{{ post.id }}">{{ post.dislikes.count }}</span></p>
+                <a href="{% url 'like_post' post.id %}" class="like-btn">Лайк</a>
+                <a href="{% url 'dislike_post' post.id %}" class="dislike-btn">Дизлайк</a>
+                <p class="card-text">{{ post.user }}</p>
+                <hr>
               </div>
             {% endfor %}
           </div>
@@ -31,29 +35,22 @@
             <h5 class="card-title">Categories</h5>
             <ul class="list-group">
               <li class="list-group-item">News Title</li>
-                {% for post in posts %}
-                  <li class="list-group-item">{{ post.title }}</li>
-                {% endfor %}
+              {% for post in posts %}
+                <li class="list-group-item">{{ post.title }}</li>
+              {% endfor %}
             </ul>
           </div>
         </div>
 
         <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Popular News</h5>
-            <ul class="list-group">
-              <li class="list-group-item">News Title</li>
-            </ul>
-            <ul class="list-group">
-                <h3>
-                  <a href="{% url 'create_news_post' %}">+ New Post</a>
-                </h3>
-            </ul>
-          </div>
+          <h3>
+            <a href="{% url 'create_news_post' %}">Добавить пост</a>
+          </h3>
+        </div>
         </div>
       </div>
     </div>
   </div>
-{% endblock %}
 
+{% endblock %}
 

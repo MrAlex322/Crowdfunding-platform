@@ -1,9 +1,20 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
 from autoslug import AutoSlugField
 from django.urls import reverse
 
-from users.models import CustomUser
+CustomUser = get_user_model()
+
+
+class Like(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey('NewsPost', on_delete=models.CASCADE)
+
+
+class Dislike(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey('NewsPost', on_delete=models.CASCADE)
 
 
 class NewsPost(models.Model):
@@ -12,8 +23,10 @@ class NewsPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     photo = models.ImageField(upload_to='my_model_photos/', blank=True, null=True)
-    slug = AutoSlugField(default='', unique=False, populate_from='title') # проверить если тайтл = цифры
+    slug = AutoSlugField(default='', unique=False, populate_from='title')
     user = models.ForeignKey(CustomUser, to_field='username', verbose_name='Пользователь', on_delete=models.CASCADE)
+    likes = models.ManyToManyField(CustomUser, related_name='liked_posts', through=Like)
+    dislikes = models.ManyToManyField(CustomUser, related_name='disliked_posts', through=Dislike)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -24,6 +37,10 @@ class NewsPost(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
 
 class Comments(models.Model):
