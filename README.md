@@ -1,4 +1,4 @@
-Crowdfunding-platform
+# Crowdfunding-platform
 
 Этот проект разработан с использованием фреймворка Django
 
@@ -23,13 +23,7 @@ Crowdfunding-platform
     source env/bin/activate
     ```
 
-4. Установите зависимости:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-5. Примените миграции:
+4. Примените миграции:
 
     ```bash
     python manage.py migrate
