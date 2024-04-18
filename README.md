@@ -1,4 +1,4 @@
-#Crowdfunding-platform
+Crowdfunding-platform
 
 Этот проект разработан с использованием фреймворка Django
 
